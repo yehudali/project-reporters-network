@@ -13,4 +13,4 @@ __pycache__/
 
 .vscode/
 .idea/
-tweet_images
+data/tweet_images
