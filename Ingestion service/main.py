@@ -15,7 +15,6 @@ if __name__ == "__main__":
 
     kafka = KafkaPublisher(cfg.KAFKA_BOOTSTRAP_SERVERS, cfg.KAFKA_TOPIC_RAW)
     
-
     orchestrator = IngestionOrchestrator(
         config=cfg, 
         ocr_engine=ocr, 
