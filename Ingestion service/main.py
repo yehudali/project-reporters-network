@@ -1,7 +1,10 @@
 from config import *
-
+from logger import AppLogger
 
 if __name__ == "__main__":
+
+    app_logger = AppLogger.get_logger("IngestionService")
+
     cfg = IngestionConfig()
     
     ocr = OCREngine()
@@ -18,7 +21,8 @@ if __name__ == "__main__":
         ocr_engine=ocr, 
         metadata_extractor=meta, 
         mongo_client=mongo, 
-        publisher=kafka
+        publisher=kafka,
+        logger=app_logger
     )
     
     # run:

@@ -7,6 +7,7 @@ import easyocr
 import requests
 import json
 from confluent_kafka import Producer
+import logging
 
 class IngestionConfig:
     def __init__(self) -> None:
@@ -76,13 +77,15 @@ class MongoLoaderClient:
             return False
         
 class KafkaPublisher:
-    def __init__(self, servers, topic):
+    def __init__(self, servers, topic, logger=None):
         conf = {
             'bootstrap.servers': servers,
             'client.id': 'ingestion-service'
         }
         self.producer = Producer(conf)
         self.topic = topic
+
+        self.logger = logger or logging.getLogger(__name__)
 
     def delivery_report(self, err, msg):
         if err is not None:
@@ -99,7 +102,7 @@ class KafkaPublisher:
             )
             self.producer.poll(0)
         except Exception as e:
-            print(e)
+            self.logger.error(f"Kafka Publish Error: {e}")
 
     def flush(self):
         self.producer.flush()
@@ -111,10 +114,11 @@ class IngestionOrchestrator:
         self.metadataextractor = metadata_extractor
         self.mongo_client = mongo_client
         self.publisher = publisher
-        self.logger = logger
+        self.logger = logger or logging.getLogger(__name__)
 
     def process_image(self, image_path):
         image_id = self.metadataextractor.generate_image_id()
+        self.logger.info(f"Processing image: {image_path} with ID: {image_id}")
         metadata = self.metadataextractor.extract_metadata(image_path)
         raw_text = self.ocrengine.extract_text(image_path)
         
@@ -131,14 +135,14 @@ class IngestionOrchestrator:
         if self.publisher:
             self.publisher.publish(data_to_publish)
 
-        print(f"Success: Processed {image_id}")
+        self.logger.info(f"Successfully processed {image_id}")
         return data_to_publish
     
 
     def run_all_directory(self):
         image_directory =  self.config.IMAGE_DIRECTORY
         if not image_directory:
-            print("Error: IMAGE_DIRECTORY is not defined in config")
+            self.logger.error(f"Directory {image_directory} does not exist")
             return
 
         if not os.path.exists(image_directory):
@@ -152,4 +156,4 @@ class IngestionOrchestrator:
                 if self.publisher:
                     self.publisher.flush()
             except Exception as e:
-                print(f"Failed to process\n file:{path}\n erorr:{e}")
+                self.logger.error(f"Failed to process file {path}: {e}")
