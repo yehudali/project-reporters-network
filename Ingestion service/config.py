@@ -37,7 +37,7 @@ class OCREngine:
         except Exception as e:
             print(e)
 
-class MetadataExtractor:
+class MetadataExtractor:# ID ומטאדאטה
     def __init__(self) -> None:
         pass
     def extract_metadata(self, Image_path:str):   # מחזיר אובייקט מטא־דאטה )גודל קובץ, ממדים, פורמט וכו‘( 
@@ -49,7 +49,7 @@ class MetadataExtractor:
                 width, height = img.size
                 img_format = img.format
                
-            return {"img_size": imag_size,
+            return {"imag_size": imag_size,
                 "img_format": img_format,
                 'img_width':width,
             "img_height": height,
@@ -93,7 +93,7 @@ class KafkaPublisher:
     def publish(self, data):
         try:
             self.producer.produce(
-                self.topic, 
+                topic = self.topic, 
                 value=json.dumps(data).encode('utf-8'),
                 callback=self.delivery_report
             )
@@ -105,14 +105,14 @@ class KafkaPublisher:
         self.producer.flush()
 
 class IngestionOrchestrator:
-    def __init__(self, config:IngestionConfig,  ocr_engine:OCREngine, metadata_extractor:MetadataExtractor, mongo_client = None, publisher = None, logger=None) -> None:
+    def __init__(self, config:IngestionConfig,  ocr_engine:OCREngine, metadata_extractor:MetadataExtractor, mongo_client:MongoLoaderClient, publisher:KafkaPublisher, logger=None) -> None:
         self.config = config
         self.ocrengine = ocr_engine
         self.metadataextractor = metadata_extractor
         self.mongo_client = mongo_client
         self.publisher = publisher
         self.logger = logger
-        
+
     def process_image(self, image_path):
         image_id = self.metadataextractor.generate_image_id()
         metadata = self.metadataextractor.extract_metadata(image_path)
