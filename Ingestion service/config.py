@@ -70,8 +70,9 @@ class MongoLoaderClient:
         try:
             with open(image_path, 'rb') as f:
                 files = {'file': f}
-                response = requests.post(f"{self.url}/upload?image_id={image_id}", files=files)
-                return response.status_code == 200
+                image_id = {"image_id": image_id}
+                requests.post(self.url,files=files, data=image_id)
+                
         except Exception as e:
             print(f"Mongo Upload Error: {e}")
             return False

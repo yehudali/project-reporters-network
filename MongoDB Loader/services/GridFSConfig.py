@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+#טוען משתני סביבה הקשורים ל־MongoDB
+
 class GridFSConfig:
     def __init__(self) -> None:
         self.mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")

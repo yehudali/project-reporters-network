@@ -12,14 +12,13 @@ class GridFSStorage:
 
         self.client = MongoClient(mongo_url)
         self.db = self.client['db_files']
-        self.collection = self.db['files']
 
         self.fs = gridfs.GridFS(self.db)
 
-    def save(self, file_path, id_image):
+    def save(self, file_stream, id_image):
         try:
             self.logger.info("try to send to mongo")
-            with open(file_path, 'rb') as file_data:
+            with open(file_stream, 'rb') as file_data:
                 file_id = self.fs.put(file_data,file_id=id_image)
                 self.logger.info(f"File uploaded with file_id: {file_id}")
                 return True
