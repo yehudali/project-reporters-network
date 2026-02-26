@@ -5,7 +5,7 @@ services:
     environment:
       - IMAGE_DIRECTORY=./data/tweet_images/
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_TOPIC_RAW=raw_images_data
+      - KAFKA_TOPIC_RAW=Raw
       - MONGO_LOADER_URL=mongodb://root:root123@mongodb:27017
     depends_on:
       kafka:

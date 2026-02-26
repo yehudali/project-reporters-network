@@ -21,7 +21,7 @@ consumer =  KafkaConsumer(bootstrap_servers=conf.bootstrem_server,
 cleaner = TextCleaner(logger)
 
    
-publisher = KafkaPublisher(bootstrap_servers=conf.bootstrem_server,topic_name="clean_text",logger=logger)
+publisher = KafkaPublisher(bootstrap_servers=conf.bootstrem_server,topic_name="Clean",logger=logger)
 
 
 
