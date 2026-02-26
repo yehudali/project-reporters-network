@@ -15,3 +15,5 @@ __pycache__/
 .idea/
 data/tweet_images
 data
+
+test.py
