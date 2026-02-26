@@ -20,6 +20,20 @@ services:
       mongodb:
         condition: service_healthy
 
+  Clean_service:
+    build: ./Clean_service/
+    container_name: Clean_service
+    environment:
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - BOOTSTREM_SERVER=kafka:9092
+  
+    depends_on:
+      kafka:
+          condition: service_healthy
+    
+
+
   kafka:
     image: confluentinc/cp-kafka:7.8.0
     container_name: kafka

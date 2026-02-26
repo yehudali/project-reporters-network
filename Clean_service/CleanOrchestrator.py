@@ -1,4 +1,3 @@
-from CleanConfig import CleanConfig
 from KafkaConsumer import KafkaConsumer
 from KafkaPublisher import KafkaPublisher
 from TextCleaner import TextCleaner
