@@ -1,6 +1,3 @@
-version: '3.9'
-
-
 services:
   ingestion-service:
     build: ./Ingestion service
@@ -9,11 +6,19 @@ services:
       - IMAGE_DIRECTORY=./data/tweet_images/
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_TOPIC_RAW=raw_images_data
-      - MONGO_LOADER_URL=http://mongodb:8001
+      - MONGO_LOADER_URL=mongodb://root:root123@mongodb:27017
     depends_on:
       kafka:
         condition: service_healthy
-
+  
+  MongoDB_Loader:
+    container_name: MongoDB_Loader
+    build: './MongoDB Loader'
+    environment:
+      - MONGO_URL=mongodb://root:root123@mongodb:27017
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   kafka:
     image: confluentinc/cp-kafka:7.8.0

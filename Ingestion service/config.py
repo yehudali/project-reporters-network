@@ -70,8 +70,9 @@ class MongoLoaderClient:
         try:
             with open(image_path, 'rb') as f:
                 files = {'file': f}
-                response = requests.post(f"{self.url}/upload?image_id={image_id}", files=files)
-                return response.status_code == 200
+                image_id = {"image_id": image_id}
+                requests.post(self.url,files=files, data=image_id)
+                
         except Exception as e:
             print(f"Mongo Upload Error: {e}")
             return False
@@ -148,7 +149,10 @@ class IngestionOrchestrator:
         if not os.path.exists(image_directory):
             print(f"erorr: directory {image_directory} not exist")
             return
-        for imag_file_name in os.listdir(image_directory):
+        
+        # זמני: הגבבלת הריצה ל10 אוביקטים
+        list_directory = os.listdir(image_directory) ###
+        for imag_file_name in list_directory[:10]: ## 
             path = os.path.join(image_directory, imag_file_name)
             try:
                 self.process_image(path)
